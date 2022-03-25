@@ -1,0 +1,46 @@
+{% extends "network/layout.html" %} {% block body %}
+<main class="container">
+  <h2 class="title">Login</h2>
+
+  {% if message %}
+  <div class="title has-text-danger is-5">{{ message }}</div>
+  {% endif %}
+
+  <form action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    <div class="field">
+      <label class="label">Name</label>
+      <div class="control has-icons-left">
+        <input
+          class="input"
+          type="text"
+          name="username"
+          placeholder="Username"
+        />
+        <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Password</label>
+      <div class="control has-icons-left">
+        <input
+          class="input"
+          type="password"
+          name="password"
+          placeholder="Password"
+        />
+        <span class="icon is-small is-left">
+          <i class="fa fa-eye-slash"></i>
+        </span>
+      </div>
+    </div>
+    <div class="buttons">
+      <input class="button is-link" type="submit" value="Login" />
+    </div>
+  </form>
+  <p class="has-text-centered">
+    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
+  </p>
+</main>
+
+{% endblock %}

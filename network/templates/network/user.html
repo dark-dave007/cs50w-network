@@ -1,159 +1,155 @@
 {% extends "network/layout.html" %}
-<!-- prettier-ignore -->
-{% comment %} 
-TODO: Ajax follow button?
-TODO: Add error message field?
-{% endcomment %}
-{% load static %} 
+{% load static %}
 {% block script %}
-<script src="{% static 'network/post.js' %}"></script>
-{% endblock script %} {% block body %}
-<section class="hero is-link is-medium mb-3 top">
-  <div class="hero-body">
-    <div class="container has-text-centered">
-      <p class="title">{{ profile.username }}</p>
-    </div>
-    <div class="columns has-text-centered">
-      <div class="column">
-        <p class="subtitle">{{ profile.posts.count }} posts</p>
-      </div>
-      <div class="column">
-        <p class="subtitle">{{ profile.followers.count }} followers</p>
-      </div>
-      <div class="column">
-        <p class="subtitle">{{ profile.get_likes_received }} likes</p>
-      </div>
-    </div>
-    <div class="buttons is-centered">
-      <!-- prettier-ignore -->
-      {% if user.is_authenticated %} 
-      {% if profile == user %}
-      <p class="mt-3">Take a stroll down memory lane...</p>
-      {% elif profile in user.following.all %}
-      <a class="button is-dark" href="{% url 'follow' profile %}"
-        ><span>Unfollow</span></a
-      >
-      {% else %}
-      <a class="button is-light" href="{% url 'follow' profile %}"
-        ><span>Follow</span></a
-      >
-      {% endif %} {% else %}
-      <p class="has-text-weight-bold title is-4">
-        Please login or signup to follow {{ profile }}!
-      </p>
-      {% endif %}
-    </div>
-  </div>
-</section>
-
-<main class="container">
-  <div class="columns posts">
-    {% for post in page_obj %}
-    <section class="card post">
-      <header class="card-header">
-        <a
-          href="{% url 'profile' post.creator %}"
-          class="card-header-title has-text-link"
-          >@{{ post.creator }}</a
-        >
-      </header>
-      <div class="card-content">
-        <div class="content">
-          <p class="title" id="content-{{ post.pk }}">{{ post.content }}</p>
-          <br />
-          <time>
-            {% if post.edited %} Edited on {% endif %}{{ post.created }}</time
-          >
-        </div>
-      </div>
-      {% if user.is_authenticated %}
-      <footer class="card-footer">
-        <a
-          class="card-footer-item like {% for like in user.get_likes %} {% if like in post.likes.all %} has-text-danger {% endif %} {% endfor %}"
-          onclick="like(this);"
-        >
-          <p>{{ post.amount_of_likes }}</p>
-          <span class="icon is-small"><i class="fa fa-heart"></i></span>
-          <p style="display: none">{{ post.pk }}</p>
-          {# Post id to use in javascript #}
-        </a>
-        {% if post.creator == request.user %}
-        <a class="card-footer-item" onclick="edit(this);">Edit</a>
+    <script src="{% static 'network/post.js' %}"></script>
+{% endblock script %}
+{% block body %}
+    <section class="hero is-link is-medium mb-3 top">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <p class="title">
+                    {{ profile.username }}
+                </p>
+            </div>
+            <div class="columns has-text-centered">
+                <div class="column">
+                    <p class="subtitle">
+                        {{ profile.posts.count }} posts
+                    </p>
+                </div>
+                <div class="column">
+                    <p class="subtitle">
+                        {{ profile.followers.count }} followers
+                    </p>
+                </div>
+                <div class="column">
+                    <p class="subtitle">
+                        {{ profile.get_likes_received }} likes
+                    </p>
+                </div>
+            </div>
+            <div class="buttons is-centered">
+                {% if user.is_authenticated %}
+                    {% if profile == user %}
+                        <p class="mt-3">
+                            Take a stroll down memory lane...
+                        </p>
+                    {% elif profile in user.following.all %}
+                    <a class="button is-dark" href="{% url 'follow' profile %}"><span>Unfollow</span></a
+                    >
+                {% else %}
+                <a class="button is-light" href="{% url 'follow' profile %}"><span>Follow</span></a
+                >
+            {% endif %}
+        {% else %}
+            <p class="has-text-weight-bold title is-4">
+                Please login or signup to follow {{ profile }}!
+            </p>
         {% endif %}
-      </footer>
-      {% endif %}
-    </section>
+    </div>
+</div>
+</section>
+<main class="container">
+    <div class="columns posts">
+        {% for post in page_obj %}
+            <section class="card post">
+                <header class="card-header">
+                <a href="{% url 'profile' post.creator %}"
+                   class="card-header-title has-text-link">@{{ post.creator }}</a
+                >
+            </header>
+            <div class="card-content">
+                <div class="content">
+                    <p class="title" id="content-{{ post.pk }}">
+                        {{ post.content }}
+                    </p>
+                    <br />
+                    <time>
+                        {% if post.edited %}Edited on{% endif %}
+                    {{ post.created }}</time
+                    >
+                </div>
+            </div>
+            {% if user.is_authenticated %}
+                <footer class="card-footer">
+                    <a class="card-footer-item like {% for like in user.get_likes %} {% if like in post.likes.all %} has-text-danger{% endif %} {% endfor %}"
+                       onclick="like(this);">
+                        <p>
+                            {{ post.amount_of_likes }}
+                        </p>
+                        <span class="icon is-small"><i class="fa fa-heart"></i></span>
+                        <p style="display: none">
+                            {{ post.pk }}
+                        </p>
+                        {# Post id to use in javascript #}
+                    </a>
+                    {% if post.creator == request.user %}<a class="card-footer-item" onclick="edit(this);">Edit</a>{% endif %}
+                </footer>
+            {% endif %}
+        </section>
     {% empty %}
-    <h2 class="subtitle">No Posts :(</h2>
+        <h2 class="subtitle">No Posts :(</h2>
     {% endfor %}
-  </div>
-
-  <nav
-    class="pagination is-rounded is-centered mb-6"
-    role="navigation"
-    aria-label="pagination"
-  >
+</div>
+<nav class="pagination is-rounded is-centered mb-6"
+     role="navigation"
+     aria-label="pagination">
     {% if page_obj.has_previous %}
-    <a
-      href="?page={{ page_obj.previous_page_number }}"
-      class="pagination-previous"
-      >Previous</a
+    <a href="?page={{ page_obj.previous_page_number }}"
+       class="pagination-previous">Previous</a
     >
-    {% endif %} {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}" class="pagination-next"
-      >Next</a
-    >
+{% endif %}
+{% if page_obj.has_next %}
+<a href="?page={{ page_obj.next_page_number }}" class="pagination-next">Next</a
+>
+{% endif %}
+<ul class="pagination-list">
+    {% if page_obj.number >= 3 %}
+        <li>
+            <a href="?page=1" class="pagination-link" aria-label="Goto page 1">1</a>
+        </li>
+        {% if page_obj.number > 3 %}
+            <li>
+                <span class="pagination-ellipsis">&hellip;</span>
+            </li>
+        {% endif %}
     {% endif %}
-
-    <ul class="pagination-list">
-      {% if page_obj.number >= 3 %}
-      <li>
-        <a href="?page=1" class="pagination-link" aria-label="Goto page 1">1</a>
-      </li>
-      {% if page_obj.number > 3 %}
-      <li><span class="pagination-ellipsis">&hellip;</span></li>
-      {% endif %} {% endif %}{% if page_obj.has_previous %}
-      <li>
-        <a
-          href="?page={{ page_obj.previous_page_number }}"
-          class="pagination-link"
-          aria-label="Goto page {{ page_obj.previous_page_number }}"
-          >{{ page_obj.previous_page_number }}</a
+    {% if page_obj.has_previous %}
+        <li>
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="pagination-link"
+           aria-label="Goto page {{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a
         >
-      </li>
-      {% endif %}
-      <li>
-        <a
-          class="pagination-link is-current"
-          aria-label="Page {{ page_obj.number }}"
-          aria-current="page"
-          >{{ page_obj.number }}</a
-        >
-      </li>
-      {% if page_obj.has_next %}
-      <li>
-        <a
-          href="?page={{ page_obj.next_page_number }}"
-          class="pagination-link"
-          aria-label="Goto page {{ page_obj.next_page_number }}"
-          >{{ page_obj.next_page_number }}</a
-        >
-      </li>
-      {% endif %}
-      <!--prettier-ignore-->
-      {% if page_obj.number < page_obj.paginator.num_pages|add:"-1" %}
-          {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
-      <li><span class="pagination-ellipsis">&hellip;</span></li>
-      {% endif %}
-      <li>
-        <a
-          href="?page={{ page_obj.paginator.num_pages }}"
-          class="pagination-link"
-          >{{ page_obj.paginator.num_pages }}</a
-        >
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
+    </li>
+{% endif %}
+<li>
+<a class="pagination-link is-current"
+   aria-label="Page {{ page_obj.number }}"
+   aria-current="page">{{ page_obj.number }}</a
+>
+</li>
+{% if page_obj.has_next %}
+    <li>
+    <a href="?page={{ page_obj.next_page_number }}"
+       class="pagination-link"
+       aria-label="Goto page {{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a
+    >
+</li>
+{% endif %}
+{% if page_obj.number < page_obj.paginator.num_pages|add:"-1"
+    %}
+    {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
+        <li>
+            <span class="pagination-ellipsis">&hellip;</span>
+        </li>
+    {% endif %}
+    <li>
+    <a href="?page={{ page_obj.paginator.num_pages }}"
+       class="pagination-link">{{ page_obj.paginator.num_pages }}</a
+    >
+</li>
+{% endif %}
+</ul>
+</nav>
 </main>
 {% endblock body %}

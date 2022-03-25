@@ -1,132 +1,125 @@
-{% extends "network/layout.html" %} {% load static %} {% block script %}
-<script src="{% static 'network/post.js' %}"></script>
-{% endblock script %} {% block body %}
-
-<main class="container">
-  {% if message %}
-  <div class="title has-text-danger is-5">{{ message }}</div>
-  {% endif %} {% if user.is_authenticated %}
-  <form id="create_post" method="post" action="{% url 'create_post' %}">
-    {% csrf_token %}
-    <div class="field">
-      <label class="label">New Post</label>
-      {{ post_form.content }}
-    </div>
-    <div class="buttons">
-      <input class="button is-link" type="submit" value="Post" />
-    </div>
-  </form>
-  {% endif %}
-
-  <div class="columns posts is-mobile is-centered">
-    {% for post in page_obj %}
-    <section class="card post column">
-      <header class="card-header">
-        <a
-          href="{% url 'profile' post.creator %}"
-          class="card-header-title has-text-link"
-          >@{{ post.creator }}</a
-        >
-      </header>
-      <div class="card-content">
-        <div class="content">
-          <p class="title" id="content-{{ post.pk }}">{{ post.content }}</p>
-          <br />
-          <time>
-            {% if post.edited %} Edited on {% endif %}{{ post.created }}</time
-          >
-        </div>
-      </div>
-      {% if user.is_authenticated %}
-      <footer class="card-footer">
-        <a
-          class="card-footer-item like {% for like in user.get_likes %} {% if like in post.likes.all %} has-text-danger {% endif %} {% endfor %}"
-          onclick="like(this);"
-        >
-          <p>{{ post.amount_of_likes }}</p>
-          <span class="icon is-small"><i class="fa fa-heart"></i></span>
-          <p style="display: none">{{ post.pk }}</p>
-          {# Post id to use in javascript #}
-        </a>
-        {% if post.creator == request.user %}
-        <a class="card-footer-item" onclick="edit(this);">Edit</a>
+{% extends "network/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'network/post.js' %}"></script>
+{% endblock script %}
+{% block body %}
+    <main class="container">
+        {% if message %}<div class="title has-text-danger is-5">{{ message }}</div>{% endif %}
+        {% if user.is_authenticated %}
+            <form id="create_post" method="post" action="{% url 'create_post' %}">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label">New Post</label>
+                    {{ post_form.content }}
+                </div>
+                <div class="buttons">
+                    <input class="button is-link" type="submit" value="Post" />
+                </div>
+            </form>
         {% endif %}
-      </footer>
-      {% endif %}
-    </section>
-    {% empty %}
-    <h2 class="subtitle">No Posts :(</h2>
-    {% endfor %}
-
-    <nav
-      class="pagination is-rounded is-centered mb-6"
-      role="navigation"
-      aria-label="pagination"
-    >
-      {% if page_obj.has_previous %}
-      <a
-        href="?page={{ page_obj.previous_page_number }}"
-        class="pagination-previous"
-        >Previous</a
-      >
-      {% endif %} {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}" class="pagination-next"
-        >Next</a
-      >
-      {% endif %}
-
-      <ul class="pagination-list">
+        <div class="columns posts is-mobile is-centered">
+            {% for post in page_obj %}
+                <section class="card post column">
+                    <header class="card-header">
+                    <a href="{% url 'profile' post.creator %}"
+                       class="card-header-title has-text-link">@{{ post.creator }}</a
+                    >
+                </header>
+                <div class="card-content">
+                    <div class="content">
+                        <p class="title" id="content-{{ post.pk }}">
+                            {{ post.content }}
+                        </p>
+                        <br />
+                        <time>
+                            {% if post.edited %}Edited on{% endif %}
+                        {{ post.created }}</time
+                        >
+                    </div>
+                </div>
+                {% if user.is_authenticated %}
+                    <footer class="card-footer">
+                        <a class="card-footer-item like {% for like in user.get_likes %} {% if like in post.likes.all %} has-text-danger{% endif %} {% endfor %}"
+                           onclick="like(this);">
+                            <p>
+                                {{ post.amount_of_likes }}
+                            </p>
+                            <span class="icon is-small"><i class="fa fa-heart"></i></span>
+                            <p style="display: none">
+                                {{ post.pk }}
+                            </p>
+                            {# Post id to use in javascript #}
+                        </a>
+                        {% if post.creator == request.user %}<a class="card-footer-item" onclick="edit(this);">Edit</a>{% endif %}
+                    </footer>
+                {% endif %}
+            </section>
+        {% empty %}
+            <h2 class="subtitle">No Posts :(</h2>
+        {% endfor %}
+        <nav class="pagination is-rounded is-centered mb-6"
+             role="navigation"
+             aria-label="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}"
+               class="pagination-previous">Previous</a
+            >
+        {% endif %}
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="pagination-next">Next</a
+        >
+    {% endif %}
+    <ul class="pagination-list">
         {% if page_obj.number >= 3 %}
-        <li>
-          <a href="?page=1" class="pagination-link" aria-label="Goto page 1"
-            >1</a
-          >
+            <li>
+            <a href="?page=1" class="pagination-link" aria-label="Goto page 1">1</a
+            >
         </li>
         {% if page_obj.number > 3 %}
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        {% endif %} {% endif %}{% if page_obj.has_previous %}
-        <li>
-          <a
-            href="?page={{ page_obj.previous_page_number }}"
-            class="pagination-link"
-            aria-label="Goto page {{ page_obj.previous_page_number }}"
-            >{{ page_obj.previous_page_number }}</a
-          >
-        </li>
+            <li>
+                <span class="pagination-ellipsis">&hellip;</span>
+            </li>
         {% endif %}
+    {% endif %}
+    {% if page_obj.has_previous %}
         <li>
-          <a
-            class="pagination-link is-current"
-            aria-label="Page {{ page_obj.number }}"
-            aria-current="page"
-            >{{ page_obj.number }}</a
-          >
-        </li>
-        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="pagination-link"
+           aria-label="Goto page {{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a
+        >
+    </li>
+{% endif %}
+<li>
+<a class="pagination-link is-current"
+   aria-label="Page {{ page_obj.number }}"
+   aria-current="page">{{ page_obj.number }}</a
+>
+</li>
+{% if page_obj.has_next %}
+    <li>
+    <a href="?page={{ page_obj.next_page_number }}"
+       class="pagination-link"
+       aria-label="Goto page {{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a
+    >
+</li>
+{% endif %}
+{% if page_obj.number <
+    page_obj.paginator.num_pages|add:"-1" %}
+    {% if page_obj.number <
+        page_obj.paginator.num_pages|add:"-2" %}
         <li>
-          <a
-            href="?page={{ page_obj.next_page_number }}"
-            class="pagination-link"
-            aria-label="Goto page {{ page_obj.next_page_number }}"
-            >{{ page_obj.next_page_number }}</a
-          >
+            <span class="pagination-ellipsis">&hellip;</span>
         </li>
-        {% endif %}
-        <!--prettier-ignore-->
-        {% if page_obj.number < page_obj.paginator.num_pages|add:"-1" %}
-          {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        {% endif %}
-        <li>
-          <a
-            href="?page={{ page_obj.paginator.num_pages }}"
-            class="pagination-link"
-            >{{ page_obj.paginator.num_pages }}</a
-          >
-        </li>
-        {% endif %}
-      </ul>
-    </nav>
-  </div>
+    {% endif %}
+    <li>
+    <a href="?page={{ page_obj.paginator.num_pages }}"
+       class="pagination-link">{{ page_obj.paginator.num_pages }}</a
+    >
+</li>
+{% endif %}
+</ul>
+</nav>
+</div>
 </main>
 {% endblock %}

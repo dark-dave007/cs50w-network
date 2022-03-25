@@ -53,7 +53,7 @@ function like(element) {
 function edit(element) {
   // Get post element
   const post = element.parentElement.parentElement;
-  const pk = element.parentElement.firstElementChild.lastElementChild.innerHTML; // wtf
+  const pk = element.parentElement.firstElementChild.lastElementChild.innerHTML.trim(); // wtf
   const prevHTML = post.innerHTML;
 
   // Add textarea for editing, save button and undo button

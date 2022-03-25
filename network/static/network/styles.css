@@ -12682,10 +12682,13 @@ a.has-text-danger-dark:focus {
   );
 }
 
+/* Fix horizontal scrollbar  */
+.columns { max-width: 100%; }
+
 @media screen and (max-width: 769px) {
   .post {
     margin: 0.75rem;
-    min-width: 80%;
-    max-width: 80%;
+    min-width: 75%;
+    max-width: 75%;
   }
 }

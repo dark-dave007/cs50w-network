@@ -44,4 +44,4 @@ And follow the instructions given by Django.
 
 The project I made is a social network, similar to twitter that will allow users to make posts, like, and follow users.
 
-This project was made using [Django](https://www.djangoproject.com/).
+This project was made using [Django](https://www.djangoproject.com/) and [Bulma](https://bulma.io).

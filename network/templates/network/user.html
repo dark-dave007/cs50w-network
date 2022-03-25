@@ -42,7 +42,7 @@
                 >
             {% endif %}
         {% else %}
-            <p class="has-text-weight-bold title is-4">
+            <p class="has-text-weight-bold has-text-centered title is-4">
                 Please login or signup to follow {{ profile }}!
             </p>
         {% endif %}
@@ -50,7 +50,7 @@
 </div>
 </section>
 <main class="container">
-    <div class="columns posts">
+    <div class="columns posts is-mobile is-centered">
         {% for post in page_obj %}
             <section class="card post">
                 <header class="card-header">
@@ -136,8 +136,7 @@
     >
 </li>
 {% endif %}
-{% if page_obj.number < page_obj.paginator.num_pages|add:"-1"
-    %}
+{% if page_obj.number < page_obj.paginator.num_pages|add:"-1" %}
     {% if page_obj.number < page_obj.paginator.num_pages|add:"-2" %}
         <li>
             <span class="pagination-ellipsis">&hellip;</span>

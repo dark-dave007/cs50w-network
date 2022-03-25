@@ -6,7 +6,7 @@ class NewPostForm(forms.Form):
         max_length=256,
         widget=forms.Textarea(
             attrs={
-                "class": "textarea",
+                "class": "textarea p-4",
                 "placeholder": "What's up?",
             }
         ),

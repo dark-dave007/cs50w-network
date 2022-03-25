@@ -23,7 +23,7 @@ Migrate:
 
 ```bash
 python3 manage.py makemigrations network
-python3 manage.py migrate network
+python3 manage.py migrate
 ```
 
 To run the development server:
